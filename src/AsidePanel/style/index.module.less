@@ -1,0 +1,110 @@
+.asidepanel-wrap {
+  // &.show{right: 0;}
+  &.hide {
+    right: -100%;
+  }
+  .asidepanel-mask {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #373737;
+    background-color: rgba(0, 0, 0, 0.6);
+    height: 100%;
+    z-index: 98;
+  }
+  .asidepanel-ct {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 400px;
+    background-color: #f8f8f8;
+    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.2);
+    z-index: 99;
+
+    animation-name: slideInRight;
+    animation-duration: 0.3s;
+
+    transition-property: all;
+    transition-duration: 0.3s;
+    opacity: 1;
+    &:global(.hide) {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    /* animation: sliderleft 0.28s linear 2s infinite alternate;
+    // animation-iteration-count:1;*/
+    &.fixed {
+      position: fixed;
+    }
+    .asidepanel-hd {
+      position: relative;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      border-bottom: 1px solid #dce5ec;
+      font-size: 16px; // background: #dce5ec;
+      // background: #f1f1f1;
+      /*渐变效果*/
+      // background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f3f3f3), color-stop(1, #dce5ec));
+      // background: -moz-linear-gradient(center top, #f3f3f3 0, #eee 100%);
+      .text {
+        display: block;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden; // height: 100%;
+        padding: 0 32px 0 8px;
+      }
+      .close {
+        line-height: 1;
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 10px 10px 0 0;
+        color: #a1a1a1;
+      }
+    }
+    .asidepanel-bd {
+      overflow: auto;
+      position: absolute;
+      top: 50px;
+      left: 0;
+      right: 0;
+      bottom: 45px;
+      &.no-footer {
+        bottom: 0;
+        z-index: 999;
+      }
+    }
+    .asidepanel-ft {
+      padding: 8px 10px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      // text-align: right;
+      height: 45px;
+      :global(.ant-btn) {
+        margin-left: 8px;
+      }
+    }
+  }
+}
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :global(.asidepanel-ct) {
+    width: 100% !important;
+  }
+}
