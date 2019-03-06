@@ -1,12 +1,13 @@
 /* eslint-disable no-script-url */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
+import ReactDOM, { findDOMNode } from "react-dom";
 import classNames from "classnames";
 import RcDrawer from "rc-drawer";
 import { Icon } from "antd";
 import { withConfigConsumer } from "antd/es/config-provider";
 import warning from "antd/es/_util/warning";
-import "antd/es/drawer/style";
+// var _warning = _interopRequireDefault(require("../_util/warning"));
 
 const DrawerContext = React.createContext(null);
 
@@ -227,6 +228,7 @@ class AsidePanel extends React.Component {
         <RcDrawer
           handler={false}
           ref={el => {
+            // console.log("elelelel", el);
             if (el && el.container) {
               this.container = el.container;
               this.contentWrapper = el.contentWrapper;
@@ -249,12 +251,13 @@ class AsidePanel extends React.Component {
   };
 
   render() {
-    // 这样 parentDrawer 在二级 drawer 中才能获取到值
     return (
       <DrawerContext.Consumer>{this.renderProvider}</DrawerContext.Consumer>
     );
   }
 }
+
+// export default AsidePanel;
 
 export default withConfigConsumer({
   prefixCls: "drawer"
