@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import { findDOMNode } from "react-dom";
 import logo from "./logo.svg";
-import AsidePanel from "./AsidePanel";
+import AsidePanel from "./aside-panel";
 // import Dialog from "rc-dialog";
 // import RcDrawer from "rc-drawer";
 import { Button, Modal } from "antd";
@@ -72,6 +72,13 @@ class App extends Component {
             onClick={this._onShowModal}
           >
             Show Modal
+          </Button>
+          <Button
+            type="primary"
+            style={{ marginRight: 16 }}
+            // onClick={this._onShowModal}
+          >
+            test
           </Button>
           <Button type="primary" onClick={this._onShowPanel1}>
             Open Drawer2

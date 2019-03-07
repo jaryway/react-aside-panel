@@ -1,6 +1,7 @@
 /* eslint-disable no-script-url */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
+import { findDOMNode } from "react-dom";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 import RcDrawer from "rc-drawer";
@@ -48,7 +49,8 @@ class AsidePanel extends React.Component {
     // 点击遮罩层或右上角叉或取消按钮的回调
     onClose: PropTypes.func,
     // 对话框外层容器的类名
-    className: PropTypes.string
+    className: PropTypes.string,
+    level: PropTypes.any
   };
 
   static defaultProps = {
@@ -83,7 +85,7 @@ class AsidePanel extends React.Component {
       if (this.props.onClose) {
         this.props.onClose(e);
       }
-      return;
+      // return;
     }
   };
 
@@ -139,15 +141,50 @@ class AsidePanel extends React.Component {
     };
   };
 
+  autoCloseHandler = ({ clientX, clientY, target }) => {
+    const { canAutoClose, onClose, toggleAutoClose } = this.props;
+    // console.log("autoCloseHandler",canAutoClose, onClose, toggleAutoClose);
+    // console.time(1);
+    // 如果 canAutoClose 为 false 记得切换回来
+    if (!canAutoClose) {
+      toggleAutoClose && setTimeout(toggleAutoClose, 0);
+      // console.timeEnd(1);
+      return false;
+    }
+
+    // 点击后有可能 点击的元素不在了，此时 是返回false
+    const target_is_modal_or_drawer = Array.from(
+      document.querySelectorAll(".ant-modal-wrap,.ant-drawer")
+    ).some(item => item.contains(target));
+    // console.timeEnd(1);
+    // 如果点击的目标是 modal 或是 drawer 不关闭 drawer
+    if (target_is_modal_or_drawer) return false;
+
+    let click_is_outside_panel = true;
+
+    const $contentWrapper = findDOMNode(this.contentWrapper);
+    if ($contentWrapper) {
+      // const $content = $container.querySelector(".ant-drawer-content-wrapper");
+      const { left: minX, top: minY, width, height } = $contentWrapper.getBoundingClientRect();
+      const maxX = minX + width;
+      const maxY = minY + height;
+      // 通过点击的坐标位置判断是否是在面板外点击。在某些情况下clientX和clientY会为0，需要判断clientX && clientY排除这种情况
+      click_is_outside_panel =
+        clientX &&
+        clientY &&
+        (clientX < minX || clientX > maxX || clientY < minY || clientY > maxY);
+    }
+    // console.timeEnd(1);
+    click_is_outside_panel && onClose && onClose();
+  };
+
   renderHeader() {
     const { title, prefixCls, closable } = this.props;
     if (!title && !closable) {
       return null;
     }
 
-    const headerClassName = title
-      ? `${prefixCls}-header`
-      : `${prefixCls}-header-no-title`;
+    const headerClassName = title ? `${prefixCls}-header` : `${prefixCls}-header-no-title`;
     return (
       <div className={headerClassName}>
         {title && <div className={`${prefixCls}-title`}>{title}</div>}
@@ -161,6 +198,7 @@ class AsidePanel extends React.Component {
     return (
       closable && (
         <button
+          type="button"
           onClick={this.close}
           aria-label="Close"
           className={`${prefixCls}-close`}
@@ -209,24 +247,6 @@ class AsidePanel extends React.Component {
     );
   };
 
-  autoCloseHandler = e => {
-    const { canAutoClose, onClose, toggleAutoClose } = this.props;
-
-    // 如果 canAutoClose 为 false 记得切换回来
-    if (!canAutoClose) {
-      toggleAutoClose && setTimeout(toggleAutoClose, 0);
-      return false;
-    }
-
-    const target_is_modal_or_drawer = Array.from(
-      document.querySelectorAll(".ant-modal-wrap,.ant-drawer")
-    ).some(item => item.contains(e.target));
-
-    // 如果点击的目标是 modal 或是 drawer 不关闭 drawer
-    if (target_is_modal_or_drawer) return;
-
-    onClose && onClose();
-  };
   // render Provider for Multi-level drawe
   renderProvider = value => {
     const {
@@ -291,9 +311,7 @@ class AsidePanel extends React.Component {
 
   render() {
     // 这样 parentDrawer 在二级 drawer 中才能获取到值
-    return (
-      <DrawerContext.Consumer>{this.renderProvider}</DrawerContext.Consumer>
-    );
+    return <DrawerContext.Consumer>{this.renderProvider}</DrawerContext.Consumer>;
   }
 }
 
