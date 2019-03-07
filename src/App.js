@@ -12,7 +12,12 @@ import "./App.css";
 const getColor = () => Math.floor(Math.random() * 256).toString("16");
 
 class App extends Component {
-  state = { modalVisible: false, panelVisible: false, canAutoClose: true };
+  state = {
+    modalVisible: false,
+    panelVisible: false,
+    canAutoClose: true,
+    buttonVisible: true
+  };
   elements = [];
   callback1 = () => {
     console.log("callback1");
@@ -31,6 +36,10 @@ class App extends Component {
   _onShowModal = () => {
     this.setState(prev => ({ modalVisible: !prev.modalVisible }));
   };
+
+  _onShowButton = () => {
+    this.setState(prev => ({ buttonVisible: !prev.buttonVisible }));
+  };
   _onClick = () => {
     this.setState(prev => ({ canAutoClose: !prev.canAutoClose }));
   };
@@ -40,7 +49,8 @@ class App extends Component {
       panelVisible,
       panelVisible1,
       modalVisible,
-      canAutoClose
+      canAutoClose,
+      buttonVisible
     } = this.state;
 
     return (
@@ -73,13 +83,23 @@ class App extends Component {
           >
             Show Modal
           </Button>
-          <Button
-            type="primary"
-            style={{ marginRight: 16 }}
-            // onClick={this._onShowModal}
-          >
-            test
-          </Button>
+          {buttonVisible ? (
+            <Button
+              type="primary"
+              style={{ marginRight: 16 }}
+              onClick={this._onShowButton}
+            >
+              点击后这个按钮不见了，Drawer 也不会关闭
+            </Button>
+          ) : (
+            <Button
+              type="primary"
+              style={{ marginRight: 16 }}
+              onClick={this._onShowButton}
+            >
+              显示按钮
+            </Button>
+          )}
           <Button type="primary" onClick={this._onShowPanel1}>
             Open Drawer2
           </Button>
